@@ -11,45 +11,55 @@
       --bg: #0a0a0a;
       --fg: #e8e8e8;
       --muted: #333;
+      --footer-h: 4rem;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
       background: var(--bg);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
     }
 
     .carousel {
       position: relative;
       width: 100%;
       max-width: 900px;
+      max-height: calc(100vh - var(--footer-h));
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .slide {
-      display: block;
+      display: none;
       opacity: 0;
-      height: 0;
-      overflow: hidden;
       transition: opacity 1s ease;
+      width: 100%;
+      justify-content: center;
     }
 
     .slide.active {
+      display: flex;
       opacity: 1;
-      height: auto;
-      overflow: visible;
     }
 
     .slide img {
-      width: 100%;
+      max-width: 100%;
+      max-height: calc(100vh - var(--footer-h));
+      width: auto;
       height: auto;
       display: block;
+      object-fit: contain;
     }
 
-    /* Arrows — hidden until hover, pure CSS chevrons, no characters */
+    /* Arrows — hidden until hover, pure CSS chevrons */
     .arrow {
       position: absolute;
       top: 50%;
@@ -83,13 +93,18 @@
     .arrow.next::before { transform: rotate(45deg); }
 
     footer {
-      margin-top: 2rem;
-      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--footer-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Georgia', serif;
       font-size: 0.68rem;
       letter-spacing: 0.18em;
       color: var(--muted);
-      line-height: 2.2;
     }
 
     footer a {
@@ -97,18 +112,23 @@
       text-decoration: none;
       text-transform: uppercase;
       transition: color 0.2s;
+      margin-right: 1.5rem;
     }
     footer a:hover { color: var(--fg); }
+
+    footer span {
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
 
   <main class="carousel" aria-label="Photo carousel">
-    <div id="slides">
+    <div id="slides" style="width:100%;display:flex;justify-content:center;">
 
       <!--
         Put your exported JPEGs in a folder called "photos/" next to this file.
-        Rename your files 01.jpg through 27.jpg, or update the filenames below.
+        Update the filenames below to match your actual filenames.
         The script shuffles the order randomly on every page load.
       -->
       <div class="slide"><img src="photos/01.jpg" alt="" loading="lazy"></div>
@@ -147,15 +167,14 @@
 
   <footer>
     <a href="https://instagram.com/louis.photo.smith" target="_blank" rel="noopener">Instagram</a>
-    <br>
-    &copy; 2026 Louis Parker Smith &nbsp;&middot;&nbsp; All rights reserved
+    <span>&copy; 2026 Louis Parker Smith &nbsp;&middot;&nbsp; All rights reserved</span>
   </footer>
 
   <script>
     const container = document.getElementById('slides');
-    const INTERVAL  = 5000; // milliseconds between auto-advance — adjust to taste
+    const INTERVAL  = 5000;
 
-    // Fisher-Yates shuffle — random order on every page load
+    // Fisher-Yates shuffle
     const slides = Array.from(container.querySelectorAll('.slide'));
     for (let i = slides.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
