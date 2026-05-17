@@ -1,13 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="styles.css">
-<title>This is my Website</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photos</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --fg: #e8e8e8;
+      --muted: #333;
+    }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .slide {
+      display: block;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      transition: opacity 1s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      height: auto;
+      overflow: visible;
+    }
+
+    .slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Arrows — hidden until hover, pure CSS chevrons, no characters */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2rem 1.2rem;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .carousel:hover .arrow { opacity: 1; }
+
+    .arrow::before {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-top: 1px solid rgba(255,255,255,0.5);
+      border-right: 1px solid rgba(255,255,255,0.5);
+      transition: border-color 0.2s;
+    }
+
+    .arrow:hover::before { border-color: rgba(255,255,255,0.9); }
+
+    .arrow.prev { left: 0; }
+    .arrow.prev::before { transform: rotate(-135deg); }
+    .arrow.next { right: 0; }
+    .arrow.next::before { transform: rotate(45deg); }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-family: 'Georgia', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      line-height: 2.2;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--fg); }
+  </style>
 </head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-<div class="box"></div>
+
+  <main class="carousel" aria-label="Photo carousel">
+    <div id="slides">
+
+      <!--
+        Put your exported JPEGs in a folder called "photos/" next to this file.
+        Rename your files 01.jpg through 27.jpg, or update the filenames below.
+        The script shuffles the order randomly on every page load.
+      -->
+      <div class="slide"><img src="photos/01.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/02.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/03.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/04.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/05.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/06.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/07.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/08.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/09.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/10.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/11.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/12.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/13.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/14.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/15.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/16.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/17.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/18.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/19.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/20.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/21.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/22.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/23.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/24.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/25.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/26.jpg" alt="" loading="lazy"></div>
+      <div class="slide"><img src="photos/27.jpg" alt="" loading="lazy"></div>
+
+    </div>
+
+    <button class="arrow prev" aria-label="Previous photo"></button>
+    <button class="arrow next" aria-label="Next photo"></button>
+  </main>
+
+  <footer>
+    <a href="https://instagram.com/louis.photo.smith" target="_blank" rel="noopener">Instagram</a>
+    <br>
+    &copy; 2026 Louis Parker Smith &nbsp;&middot;&nbsp; All rights reserved
+  </footer>
+
+  <script>
+    const container = document.getElementById('slides');
+    const INTERVAL  = 5000; // milliseconds between auto-advance — adjust to taste
+
+    // Fisher-Yates shuffle — random order on every page load
+    const slides = Array.from(container.querySelectorAll('.slide'));
+    for (let i = slides.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(slides[j]);
+      [slides[i], slides[j]] = [slides[j], slides[i]];
+    }
+
+    let current = 0;
+    let timer;
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(next, INTERVAL);
+    }
+
+    document.querySelector('.arrow.next').addEventListener('click', () => { next(); startTimer(); });
+    document.querySelector('.arrow.prev').addEventListener('click', () => { prev(); startTimer(); });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') { next(); startTimer(); }
+      if (e.key === 'ArrowLeft')  { prev(); startTimer(); }
+    });
+
+    goTo(0);
+    startTimer();
+  </script>
+
 </body>
 </html>
